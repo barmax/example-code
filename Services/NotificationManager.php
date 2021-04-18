@@ -38,17 +38,18 @@ class NotificationManager
         }
 
         $devices = $this->deviceRepository->findAllByCountryCode($countryCode);
+
+        if ($devices->isEmpty()) {
+            return false;
+        }
+
         $messages = $this->createMessages($devices, $text, $metadata);
 
         foreach ($messages as $payload) {
             $this->client->send($payload);
         }
 
-        if (count($messages) > 0) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
@@ -68,17 +69,18 @@ class NotificationManager
         }
 
         $devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
+
+        if ($devices->isEmpty()) {
+            return false;
+        }
+
         $messages = $this->createMessages($devices, $text, $metadata);
 
         foreach ($messages as $payload) {
             $this->client->send($payload);
         }
 
-        if (count($messages) > 0) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**
