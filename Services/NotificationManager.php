@@ -13,67 +13,68 @@ class NotificationManager
 
     private DeviceRepository $deviceRepository;
 
-	public function __construct(ClientInterface $client, DeviceRepository $deviceRepository)
-	{
-		$this->client = $client;
-		$this->deviceRepository = $deviceRepository;
-	}
+    public function __construct(ClientInterface $client, DeviceRepository $deviceRepository)
+    {
+        $this->client = $client;
+        $this->deviceRepository = $deviceRepository;
+    }
 
     /**
      * Sends a message for all users from one country.
      *
-     * @param string $countryCode;
+     * @param string $countryCode ;
      * @param string $text
      * @param array $metadata
      *
      * @return bool
      */
     public function notifyAllUsersByCountry(string $countryCode, string $text, array $metadata): bool
-	{
-		if (isset($text) && !empty($metadata)) {
-			$readyToSend = true;
-		} else if(isset($text) && empty($metadata) == true) {
-			$metadata = array(
-					'icon' => 'default.ico',
-			);
-			$readyToSend = true;
-		} else{
-			$readyToSend = false;
-		}
+    {
+        if (isset($text) && !empty($metadata)) {
+            $readyToSend = true;
+        } elseif (isset($text) && empty($metadata) == true) {
+            $metadata = ['icon' => 'default.ico'];
+            $readyToSend = true;
+        } else {
+            $readyToSend = false;
+        }
 
-		if($readyToSend == false){
-			return false;
-		}else{
-			$messages = array();
-			$devices = $this->deviceRepository->findAllByCountryCode($countryCode);
-			foreach($devices as $device){
-				if($device->state != 'ACTIVE'){
-					$metadata['is_active'] = false;
-				}else{
-					$metadata['is_active'] = true;
-				}
+        if ($readyToSend == false) {
+            return false;
+        }
 
-				$messages[] = array(
-					'message' => $text,
-					'registration_id' => $device->registration_id,
-					'data' => $metadata
-				);
-			}
-			foreach ($messages as $payload){
-				$this->client->send($payload);
-			}
+        $messages = [];
+        $devices = $this->deviceRepository->findAllByCountryCode($countryCode);
 
-			if(count($messages) > 0)
-				return true;
-			else
-				return false;
-		}
-	}
+        foreach ($devices as $device) {
+            if ($device->state != 'ACTIVE') {
+                $metadata['is_active'] = false;
+            } else {
+                $metadata['is_active'] = true;
+            }
+
+            $messages[] = [
+                'message' => $text,
+                'registration_id' => $device->registration_id,
+                'data' => $metadata
+            ];
+        }
+
+        foreach ($messages as $payload) {
+            $this->client->send($payload);
+        }
+
+        if (count($messages) > 0) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Sends a message to an user.
      *
-     * @param string $countryCode;
+     * @param string $countryCode ;
      * @param int $userId
      * @param string $text
      * @param array $metadata
@@ -81,44 +82,45 @@ class NotificationManager
      * @return bool
      */
     public function notifyUser(string $countryCode, int $userId, string $text, array $metadata): bool
-	{
-		if (isset($text) && !empty($metadata)) {
-			$readyToSend = true;
-		} else if(isset($text) && empty($metadata) == true) {
-			$metadata = array(
-				'icon' => 'default.ico',
-			);
-			$readyToSend = true;
-		} else{
-			$readyToSend = false;
-		}
+    {
+        if (isset($text) && !empty($metadata)) {
+            $readyToSend = true;
+        } elseif (isset($text) && empty($metadata) == true) {
+            $metadata = ['icon' => 'default.ico'];
+            $readyToSend = true;
+        } else {
+            $readyToSend = false;
+        }
 
-		if($readyToSend == false){
-			return false;
-		}else{
-			$messages = array();
-			$devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
-			foreach($devices as $device){
-				if($device->state != 'ACTIVE'){
-					$metadata['is_active'] = false;
-				}else{
-					$metadata['is_active'] = true;
-				}
+        if ($readyToSend == false) {
+            return false;
+        }
+        $messages = [];
+        $devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
 
-				$messages[] = array(
-					'message' => $text,
-					'registration_id' => $device->registration_id,
-					'data' => $metadata
-				);
-			}
-			foreach ($messages as $payload){
-				$this->client->send($payload);
-			}
+        foreach ($devices as $device) {
+            if ($device->state != 'ACTIVE') {
+                $metadata['is_active'] = false;
+            } else {
+                $metadata['is_active'] = true;
+            }
 
-			if(count($messages) > 0)
-				return true;
-			else
-				return false;
-		}
-	}
+            $messages[] = [
+                'message' => $text,
+                'registration_id' => $device->registration_id,
+                'data' => $metadata
+            ];
+        }
+
+        foreach ($messages as $payload) {
+            $this->client->send($payload);
+        }
+
+        if (count($messages) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+}
 }
