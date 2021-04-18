@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\Message;
+use App\Enums\DeviceStateEnum;
 use App\Model\Entity\Device;
 use App\Repository\DeviceRepository;
 
@@ -48,7 +49,7 @@ class NotificationManager
         $devices = $this->deviceRepository->findAllByCountryCode($countryCode);
 
         foreach ($devices as $device) {
-            if ($device->state != 'ACTIVE') {
+            if ($device->state !== DeviceStateEnum::ACTIVE) {
                 $metadata['is_active'] = false;
             } else {
                 $metadata['is_active'] = true;
@@ -96,7 +97,7 @@ class NotificationManager
         $devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
 
         foreach ($devices as $device) {
-            if ($device->state != 'ACTIVE') {
+            if ($device->state !== DeviceStateEnum::ACTIVE) {
                 $metadata['is_active'] = false;
             } else {
                 $metadata['is_active'] = true;
