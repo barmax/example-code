@@ -99,7 +99,7 @@ class NotificationManager
         }
 
         foreach ($devices as $device) {
-            $metadata[]['is_active'] = $device->state !== DeviceStateEnum::ACTIVE ? false : true;
+            $metadata['is_active'] = $device->state !== DeviceStateEnum::ACTIVE ? false : true;
 
             $messages[] = [
                 'message' => $text,
