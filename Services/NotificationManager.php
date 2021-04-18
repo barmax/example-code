@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Model\Entity\Device;
+use App\Repository\DeviceRepository;
 
 class NotificationManager
 {
     private ClientInterface $client;
 
-	public function __construct($client)
+    private DeviceRepository $deviceRepository;
+
+	public function __construct(ClientInterface $client, DeviceRepository $deviceRepository)
 	{
 		$this->client = $client;
+		$this->deviceRepository = $deviceRepository;
 	}
 
     /**
@@ -41,7 +45,7 @@ class NotificationManager
 			return false;
 		}else{
 			$messages = array();
-			$devices = Device::whereCountryCode($this->countryCode)->get();
+			$devices = $this->deviceRepository->findAllByCountryCode($countryCode);
 			foreach($devices as $device){
 				if($device->state != 'ACTIVE'){
 					$metadata['is_active'] = false;
@@ -93,7 +97,7 @@ class NotificationManager
 			return false;
 		}else{
 			$messages = array();
-			$devices = Device::whereCountryCode($this->countryCode)->whereUserId($userId)->get();
+			$devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
 			foreach($devices as $device){
 				if($device->state != 'ACTIVE'){
 					$metadata['is_active'] = false;
