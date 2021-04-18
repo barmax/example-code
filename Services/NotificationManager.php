@@ -1,20 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App\Services;
+
 use App\Model\Entity\Device;
 
 class NotificationManager
 {
+    private ClientInterface $client;
 
-	public $countryCode;
-	public $client;
-
-	public function __construct($client, $countryCode)
+	public function __construct($client)
 	{
 		$this->client = $client;
-		$this->countryCode = $countryCode;
 	}
 
-	public function notifyAllUsers($text, $metadata)
+    /**
+     * Sends a message for all users from one country.
+     *
+     * @param string $countryCode;
+     * @param string $text
+     * @param array $metadata
+     *
+     * @return bool
+     */
+    public function notifyAllUsersByCountry(string $countryCode, string $text, array $metadata): bool
 	{
 		if (isset($text) && !empty($metadata)) {
 			$readyToSend = true;
@@ -56,7 +66,17 @@ class NotificationManager
 		}
 	}
 
-	public function notifyUser($userId, $text, $metadata)
+    /**
+     * Sends a message to an user.
+     *
+     * @param string $countryCode;
+     * @param int $userId
+     * @param string $text
+     * @param array $metadata
+     *
+     * @return bool
+     */
+    public function notifyUser(string $countryCode, int $userId, string $text, array $metadata): bool
 	{
 		if (isset($text) && !empty($metadata)) {
 			$readyToSend = true;
