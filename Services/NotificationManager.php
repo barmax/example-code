@@ -33,10 +33,6 @@ class NotificationManager
      */
     public function notifyAllUsersByCountry(string $countryCode, string $text, Metadata $metadata): bool
     {
-        if ($this->isReadyToSend($text, $metadata) === false) {
-            return false;
-        }
-
         $devices = $this->deviceRepository->findAllByCountryCode($countryCode);
 
         if ($devices->isEmpty()) {
@@ -64,11 +60,7 @@ class NotificationManager
      */
     public function notifyUser(string $countryCode, int $userId, string $text, Metadata $metadata): bool
     {
-        if ($this->isReadyToSend($text, $metadata) === false) {
-            return false;
-        }
-
-        $devices = $this->deviceRepository->findAllCountryByCodeAndUserId($countryCode, $userId);
+        $devices = $this->deviceRepository->findAllByCountryCodeAndUserId($countryCode, $userId);
 
         if ($devices->isEmpty()) {
             return false;
@@ -105,29 +97,5 @@ class NotificationManager
         }
 
         return $messages;
-    }
-
-    /**
-     * Validates that is data ready to send.
-     *
-     * @todo I think this action should use outside the NotificationManager.
-     *
-     * @param string $text
-     * @param Metadata $metadata
-     *
-     * @return bool
-     */
-    private function isReadyToSend(string $text, Metadata $metadata): bool
-    {
-        $readyToSend = false;
-
-        if (isset($text) && !empty($metadata)) {
-            $readyToSend = true;
-        } elseif (isset($text) && empty($metadata) == true) {
-            $metadata->setDefaultIcon();
-            $readyToSend = true;
-        }
-
-        return $readyToSend;
     }
 }
