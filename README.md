@@ -1,4 +1,4 @@
-##Introduce CZ
+## Introduce CZ
 - Třída NotificationManager je funkční ale špatně napsaný a zastaralý kód. 
 - Práci s databází zajištuje ORM Elloquent (https://laravel.com/docs/master/eloquent).
 - Základem třídy jsou její vlastnosti $client a $countryCode. 
@@ -10,7 +10,7 @@
 	- Využijte přednosti posledních verzí PHP.
 	- Interface třídy NotificationManager musí zůstat kompatibilní.
 
-##Introduce ENG
+## Introduce ENG
 - The NotificationManager class is a functional but bad written and legacy code what could be written more effective. 
 - Work with the database is provided by ORM Elloquent (https://laravel.com/docs/master/eloquent).
 - Base attributes of the class are $client a $countryCode. 
