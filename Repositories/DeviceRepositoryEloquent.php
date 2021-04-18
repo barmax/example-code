@@ -23,7 +23,7 @@ class DeviceRepositoryEloquent implements DeviceRepository
     /**
      * {@inheritDoc}
      */
-    public function findAllCountryCodeAndUserId(string $countryCode, int $userId): Collection
+    public function findAllByCountryCodeAndUserId(string $countryCode, int $userId): Collection
     {
         /** @var Collection $collection */
         $collection = Device::whereCountryCode($this->countryCode)->whereUserId($userId)->get();

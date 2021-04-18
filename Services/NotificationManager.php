@@ -68,7 +68,7 @@ class NotificationManager
             return false;
         }
 
-        $devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
+        $devices = $this->deviceRepository->findAllCountryByCodeAndUserId($countryCode, $userId);
 
         if ($devices->isEmpty()) {
             return false;

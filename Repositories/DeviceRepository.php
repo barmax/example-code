@@ -26,5 +26,5 @@ interface DeviceRepository
      *
      * @return Collection Collection
      */
-    public function findAllCountryCodeAndUserId(string $countryCode, int $userId): Collection;
+    public function findAllByCountryCodeAndUserId(string $countryCode, int $userId): Collection;
 }
