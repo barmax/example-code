@@ -12,16 +12,11 @@ class Metadata
 
     private bool $isActive;
 
-    public function __construct(string $type, string $icon, bool $isActive)
+    public function __construct(string $type, string $icon = 'default.ico', bool $isActive = true)
     {
         $this->type = $type;
         $this->icon = $icon;
         $this->isActive = $isActive;
-    }
-
-    public function setDefaultIcon(): void
-    {
-        $this->icon = 'default.ico';
     }
 
     public function setNotActive(): void
