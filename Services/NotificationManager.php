@@ -30,16 +30,16 @@ class NotificationManager
      */
     public function notifyAllUsersByCountry(string $countryCode, string $text, array $metadata): bool
     {
+        $readyToSend = false;
+
         if (isset($text) && !empty($metadata)) {
             $readyToSend = true;
         } elseif (isset($text) && empty($metadata) == true) {
             $metadata = ['icon' => 'default.ico'];
             $readyToSend = true;
-        } else {
-            $readyToSend = false;
         }
 
-        if ($readyToSend == false) {
+        if ($readyToSend === false) {
             return false;
         }
 
@@ -83,16 +83,16 @@ class NotificationManager
      */
     public function notifyUser(string $countryCode, int $userId, string $text, array $metadata): bool
     {
+        $readyToSend = false;
+
         if (isset($text) && !empty($metadata)) {
             $readyToSend = true;
         } elseif (isset($text) && empty($metadata) == true) {
             $metadata = ['icon' => 'default.ico'];
             $readyToSend = true;
-        } else {
-            $readyToSend = false;
         }
 
-        if ($readyToSend == false) {
+        if ($readyToSend === false) {
             return false;
         }
         $messages = [];
