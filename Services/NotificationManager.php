@@ -9,6 +9,7 @@ use App\DTO\Metadata;
 use App\Enums\DeviceStateEnum;
 use App\Model\Entity\Device;
 use App\Repository\DeviceRepository;
+use Illuminate\Support\Collection;
 
 class NotificationManager
 {
@@ -46,16 +47,8 @@ class NotificationManager
             return false;
         }
 
-        $messages = [];
         $devices = $this->deviceRepository->findAllByCountryCode($countryCode);
-
-        foreach ($devices as $device) {
-            if ($device->state !== DeviceStateEnum::ACTIVE) {
-                $metadata->setNotActive();
-            }
-
-            $messages[] = new Message($text, $device->registration_id, $metadata);
-        }
+        $messages = $this->createMessages($devices, $text, $metadata);
 
         foreach ($messages as $payload) {
             $this->client->send($payload);
@@ -92,16 +85,9 @@ class NotificationManager
         if ($readyToSend === false) {
             return false;
         }
-        $messages = [];
+
         $devices = $this->deviceRepository->findAllCountryCodeAndUserId($countryCode, $userId);
-
-        foreach ($devices as $device) {
-            if ($device->state !== DeviceStateEnum::ACTIVE) {
-                $metadata->setNotActive();
-            }
-
-            $messages[] = new Message($text, $device->registration_id, $metadata);
-        }
+        $messages = $this->createMessages($devices, $text, $metadata);
 
         foreach ($messages as $payload) {
             $this->client->send($payload);
@@ -112,5 +98,29 @@ class NotificationManager
         }
 
         return false;
+    }
+
+    /**
+     * Creates array of message for devices.
+     *
+     * @param Collection $devices
+     * @param string $text
+     * @param Metadata $metadata
+     *
+     * @return array
+     */
+    private function createMessages(Collection $devices, string $text, Metadata $metadata): array
+    {
+        $messages = [];
+
+        foreach ($devices as $device) {
+            if ($device->state !== DeviceStateEnum::ACTIVE) {
+                $metadata->setNotActive();
+            }
+
+            $messages[] = new Message($text, $device->registration_id, $metadata);
+        }
+
+        return $messages;
     }
 }
