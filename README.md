@@ -22,3 +22,10 @@
 	- With using latest PHP features.
 	- The interface of the NotificationManager class must stay compatible.
 	
+	
+## Refactoring
+
+The refactoring has 2 options. The first option (NotificationManager) is wide refactoring than the second. The first
+ first gives more flexible, strict and testable code. The second (NotificationManager2) is speedy but overhead because
+  the manager must not validate input data. It's not manager work. 
+	
