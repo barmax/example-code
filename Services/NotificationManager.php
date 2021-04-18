@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\DTO\Message;
 use App\Model\Entity\Device;
 use App\Repository\DeviceRepository;
 
@@ -53,11 +54,7 @@ class NotificationManager
                 $metadata['is_active'] = true;
             }
 
-            $messages[] = [
-                'message' => $text,
-                'registration_id' => $device->registration_id,
-                'data' => $metadata
-            ];
+            $messages[] = new Message($text, $device->registration_id, $metadata);
         }
 
         foreach ($messages as $payload) {
@@ -105,11 +102,7 @@ class NotificationManager
                 $metadata['is_active'] = true;
             }
 
-            $messages[] = [
-                'message' => $text,
-                'registration_id' => $device->registration_id,
-                'data' => $metadata
-            ];
+            $messages[] = new Message($text, $device->registration_id, $metadata);
         }
 
         foreach ($messages as $payload) {
