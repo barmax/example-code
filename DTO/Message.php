@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DTO;``
+namespace App\DTO;
 
 class Message
 {
@@ -10,9 +10,9 @@ class Message
 
     private int $deviceRegistrationId;
 
-    private array $metadata;
+    private Metadata $metadata;
 
-    public function __construct(string $text, int $deviceRegistrationId, array $metadata) {
+    public function __construct(string $text, int $deviceRegistrationId, Metadata $metadata) {
         $this->text = $text;
         $this->deviceRegistrationId = $deviceRegistrationId;
         $this->metadata = $metadata;
@@ -28,7 +28,7 @@ class Message
         return $this->deviceRegistrationId;
     }
 
-    public function getMetadata(): array
+    public function getMetadata(): Metadata
     {
         return $this->metadata;
     }

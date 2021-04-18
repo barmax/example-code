@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\DTO\Message;
+use App\DTO\Metadata;
 use App\Enums\DeviceStateEnum;
 use App\Model\Entity\Device;
 use App\Repository\DeviceRepository;
@@ -26,18 +27,18 @@ class NotificationManager
      *
      * @param string $countryCode ;
      * @param string $text
-     * @param array $metadata
+     * @param Metadata $metadata
      *
      * @return bool
      */
-    public function notifyAllUsersByCountry(string $countryCode, string $text, array $metadata): bool
+    public function notifyAllUsersByCountry(string $countryCode, string $text, Metadata $metadata): bool
     {
         $readyToSend = false;
 
         if (isset($text) && !empty($metadata)) {
             $readyToSend = true;
         } elseif (isset($text) && empty($metadata) == true) {
-            $metadata = ['icon' => 'default.ico'];
+            $metadata->setDefaultIcon();
             $readyToSend = true;
         }
 
@@ -50,9 +51,7 @@ class NotificationManager
 
         foreach ($devices as $device) {
             if ($device->state !== DeviceStateEnum::ACTIVE) {
-                $metadata['is_active'] = false;
-            } else {
-                $metadata['is_active'] = true;
+                $metadata->setNotActive();
             }
 
             $messages[] = new Message($text, $device->registration_id, $metadata);
@@ -79,14 +78,14 @@ class NotificationManager
      *
      * @return bool
      */
-    public function notifyUser(string $countryCode, int $userId, string $text, array $metadata): bool
+    public function notifyUser(string $countryCode, int $userId, string $text, Metadata $metadata): bool
     {
         $readyToSend = false;
 
         if (isset($text) && !empty($metadata)) {
             $readyToSend = true;
         } elseif (isset($text) && empty($metadata) == true) {
-            $metadata = ['icon' => 'default.ico'];
+            $metadata->setDefaultIcon();
             $readyToSend = true;
         }
 
@@ -98,9 +97,7 @@ class NotificationManager
 
         foreach ($devices as $device) {
             if ($device->state !== DeviceStateEnum::ACTIVE) {
-                $metadata['is_active'] = false;
-            } else {
-                $metadata['is_active'] = true;
+                $metadata->setNotActive();
             }
 
             $messages[] = new Message($text, $device->registration_id, $metadata);
@@ -116,5 +113,4 @@ class NotificationManager
 
         return false;
     }
-}
 }
