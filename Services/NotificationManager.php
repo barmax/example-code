@@ -10,6 +10,9 @@ use App\Enums\DeviceStateEnum;
 use App\Repository\DeviceRepository;
 use Illuminate\Support\Collection;
 
+/**
+ * A manager that notifies users devices separates by country.
+ */
 class NotificationManager
 {
     private ClientInterface $client;
@@ -89,11 +92,9 @@ class NotificationManager
         $messages = [];
 
         foreach ($devices as $device) {
-            if ($device->state !== DeviceStateEnum::ACTIVE) {
-                $metadata->setNotActive();
+            if ($device->state === DeviceStateEnum::ACTIVE) {
+                $messages[] = new Message($text, $device->registration_id, $metadata);
             }
-
-            $messages[] = new Message($text, $device->registration_id, $metadata);
         }
 
         return $messages;

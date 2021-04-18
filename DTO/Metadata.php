@@ -33,9 +33,4 @@ class Metadata
     {
         return $this->icon;
     }
-
-    public function isActive(): bool
-    {
-        return $this->isActive;
-    }
 }
