@@ -7,7 +7,6 @@ namespace App\Services;
 use App\DTO\Message;
 use App\DTO\Metadata;
 use App\Enums\DeviceStateEnum;
-use App\Model\Entity\Device;
 use App\Repository\DeviceRepository;
 use Illuminate\Support\Collection;
 
@@ -34,16 +33,7 @@ class NotificationManager
      */
     public function notifyAllUsersByCountry(string $countryCode, string $text, Metadata $metadata): bool
     {
-        $readyToSend = false;
-
-        if (isset($text) && !empty($metadata)) {
-            $readyToSend = true;
-        } elseif (isset($text) && empty($metadata) == true) {
-            $metadata->setDefaultIcon();
-            $readyToSend = true;
-        }
-
-        if ($readyToSend === false) {
+        if ($this->isReadyToSend($text, $metadata) === false) {
             return false;
         }
 
@@ -67,22 +57,13 @@ class NotificationManager
      * @param string $countryCode ;
      * @param int $userId
      * @param string $text
-     * @param array $metadata
+     * @param Metadata $metadata
      *
      * @return bool
      */
     public function notifyUser(string $countryCode, int $userId, string $text, Metadata $metadata): bool
     {
-        $readyToSend = false;
-
-        if (isset($text) && !empty($metadata)) {
-            $readyToSend = true;
-        } elseif (isset($text) && empty($metadata) == true) {
-            $metadata->setDefaultIcon();
-            $readyToSend = true;
-        }
-
-        if ($readyToSend === false) {
+        if ($this->isReadyToSend($text, $metadata) === false) {
             return false;
         }
 
@@ -107,7 +88,7 @@ class NotificationManager
      * @param string $text
      * @param Metadata $metadata
      *
-     * @return array
+     * @return Message[]
      */
     private function createMessages(Collection $devices, string $text, Metadata $metadata): array
     {
@@ -122,5 +103,29 @@ class NotificationManager
         }
 
         return $messages;
+    }
+
+    /**
+     * Validates that is data ready to send.
+     *
+     * @todo I think this action should use outside the NotificationManager.
+     *
+     * @param string $text
+     * @param Metadata $metadata
+     *
+     * @return bool
+     */
+    private function isReadyToSend(string $text, Metadata $metadata): bool
+    {
+        $readyToSend = false;
+
+        if (isset($text) && !empty($metadata)) {
+            $readyToSend = true;
+        } elseif (isset($text) && empty($metadata) == true) {
+            $metadata->setDefaultIcon();
+            $readyToSend = true;
+        }
+
+        return $readyToSend;
     }
 }
