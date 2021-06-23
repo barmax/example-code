@@ -43,10 +43,7 @@ class NotificationManager
         }
 
         $messages = $this->createMessages($devices, $text, $metadata);
-
-        foreach ($messages as $payload) {
-            $this->client->send($payload);
-        }
+        $this->sendMessages($messages);
 
         return true;
     }
@@ -70,10 +67,7 @@ class NotificationManager
         }
 
         $messages = $this->createMessages($devices, $text, $metadata);
-
-        foreach ($messages as $payload) {
-            $this->client->send($payload);
-        }
+        $this->sendMessages($messages);
 
         return true;
     }
@@ -81,22 +75,32 @@ class NotificationManager
     /**
      * Creates array of message for devices.
      *
-     * @param Collection $devices
+     * @param Iterable $devices
      * @param string $text
      * @param Metadata $metadata
      *
      * @return Message[]
      */
-    private function createMessages(Collection $devices, string $text, Metadata $metadata): array
+    private function createMessages(Iterable $devices, string $text, Metadata $metadata): array
     {
         $messages = [];
 
         foreach ($devices as $device) {
-            if ($device->state === DeviceStateEnum::ACTIVE) {
-                $messages[] = new Message($text, $device->registration_id, $metadata);
-            }
+            $messages[] = new Message($text, $device->registration_id, $metadata);
         }
 
         return $messages;
+    }
+
+    /**
+     * Send messages to users devices.
+     *
+     * @param iterable $messages
+     */
+    private function sendMessages(Iterable $messages): void
+    {
+        foreach ($messages as $payload) {
+            $this->client->send($payload);
+        }
     }
 }

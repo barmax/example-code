@@ -14,9 +14,9 @@ interface DeviceRepository
      *
      * @param string $countryCode
      *
-     * @return Collection Collection
+     * @return LazyCollection LazyCollection
      */
-    public function findAllByCountryCode(string $countryCode): Collection;
+    public function findAllActiveByCountryCode(string $countryCode): LazyCollection;
 
     /**
      * Finds all devices by country code and user ID.
@@ -24,7 +24,7 @@ interface DeviceRepository
      * @param string $countryCode
      * @param int $userId
      *
-     * @return Collection Collection
+     * @return LazyCollection LazyCollection
      */
-    public function findAllByCountryCodeAndUserId(string $countryCode, int $userId): Collection;
+    public function findAllActiveByCountryCodeAndUserId(string $countryCode, int $userId): LazyCollection;
 }

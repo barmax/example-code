@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Enums\DeviceStateEnum;
 use App\Repository\DeviceRepository;
-use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 
 class DeviceRepositoryEloquent implements DeviceRepository
 {
     /**
      * {@inheritDoc}
      */
-    public function findAllByCountryCode(string $countryCode): Collection
+    public function findAllActiveByCountryCode(string $countryCode): LazyCollection
     {
-        /** @var Collection $collection */
-        $collection = Device::whereCountryCode($this->countryCode)->get();
+        /** @var LazyCollection $collection */
+        $collection = Device::whereCountryCode($countryCode)
+            ->where('state', '=', DeviceStateEnum::ACTIVE)
+            ->lazy();
 
         return $collection;
     }
@@ -23,10 +26,13 @@ class DeviceRepositoryEloquent implements DeviceRepository
     /**
      * {@inheritDoc}
      */
-    public function findAllByCountryCodeAndUserId(string $countryCode, int $userId): Collection
+    public function findAllActiveByCountryCodeAndUserId(string $countryCode, int $userId): LazyCollection
     {
-        /** @var Collection $collection */
-        $collection = Device::whereCountryCode($this->countryCode)->whereUserId($userId)->get();
+        /** @var LazyCollection $collection */
+        $collection = Device::whereCountryCode($countryCode)
+            ->whereUserId($userId)
+            ->where('state', '=', DeviceStateEnum::ACTIVE)
+            ->lazy();
 
         return $collection;
     }

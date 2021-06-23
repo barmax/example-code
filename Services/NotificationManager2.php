@@ -36,17 +36,14 @@ class NotificationManager
             return false;
         }
 
-        $devices = Device::whereCountryCode($this->countryCode)->get();
+        $devices = Device::whereCountryCode($this->countryCode)->lazy();
 
         if ($devices->isEmpty()) {
             return false;
         }
 
         $messages = $this->createMessages($devices, $text, $metadata);
-
-        foreach ($messages as $payload) {
-            $this->client->send($payload);
-        }
+        $this->sendMessages($messages);
 
         return true;
     }
@@ -66,17 +63,16 @@ class NotificationManager
             return false;
         }
 
-        $devices = Device::whereCountryCode($this->countryCode)->whereUserId($userId)->get();
+        $devices = Device::whereCountryCode($this->countryCode)
+            ->whereUserId($userId)
+            ->lazy();
 
         if ($devices->isEmpty()) {
             return false;
         }
 
         $messages = $this->createMessages($devices, $text, $metadata);
-
-        foreach ($messages as $payload) {
-            $this->client->send($payload);
-        }
+        $this->sendMessages($messages);
 
         return true;
     }
@@ -99,7 +95,7 @@ class NotificationManager
         }
 
         foreach ($devices as $device) {
-            $metadata['is_active'] = $device->state !== DeviceStateEnum::ACTIVE ? false : true;
+            $metadata['is_active'] = $device->state === DeviceStateEnum::ACTIVE ? true : false;
 
             $messages[] = [
                 'message' => $text,
@@ -109,5 +105,18 @@ class NotificationManager
         }
 
         return $messages;
+    }
+
+
+    /**
+     * Send messages to users devices.
+     *
+     * @param iterable $messages
+     */
+    private function sendMessages(Iterable $messages): void
+    {
+        foreach ($messages as $payload) {
+            $this->client->send($payload);
+        }
     }
 }
